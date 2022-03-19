@@ -1,12 +1,17 @@
 package main
 
 import (
-	src "github.com/quarkus7/mravenci/pkg"
+	"math/rand"
+	"time"
+
+	pkg "github.com/quarkus7/mravenci/pkg"
 )
 
 func main() {
-	game := src.NewGame()
-	controller := src.NewController(game)
+	rand.Seed(time.Now().UnixNano())
+
+	game := pkg.NewGame()
+	controller := pkg.NewController(game)
 
 	controller.Run()
 }

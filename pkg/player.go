@@ -1,143 +1,112 @@
-package src
+package pkg
 
-type Player interface {
-	GetBricks() int
-	GetWeapons() int
-	GetCrystals() int
+import "fmt"
 
-	GetBuilders() int
-	GetSoldiers() int
-	GetMages() int
+type Player struct {
+	Cards []Card
 
-	GetCastle() int
-	GetFence() int
-
-	SetCrystals(value int)
-	SetBricks(value int)
-	SetWeapons(value int)
-
-	SetMages(value int)
-	SetBuilders(value int)
-	SetSoldiers(value int)
-
-	SetCastle(value int)
-	SetFence(value int)
-
-	Attack(value int)
-
-	GetCards() []Card
-	ReplaceCard(pos int, newCard Card)
+	Crystals, Bricks, Weapons int
+	Mages, Builders, Soldiers int
+	Castle, Fence             int
 }
 
-type player struct {
-	cards []Card
+func NewPlayer(cardsPackage CardsPackage) *Player {
+	player := &Player{}
+	player.Crystals = 5
+	player.Bricks = 5
+	player.Weapons = 5
 
-	crystals, bricks, weapons int
-	mages, builders, soldiers int
-	castle, fence             int
-}
+	player.Mages = 2
+	player.Builders = 2
+	player.Soldiers = 2
 
-func NewPlayer(cardsPackage CardsPackage) Player {
-	player := &player{}
-	player.crystals = 5
-	player.bricks = 5
-	player.weapons = 5
-
-	player.mages = 2
-	player.builders = 2
-	player.soldiers = 2
-
-	player.castle = 30
-	player.fence = 10
+	player.Castle = 30
+	player.Fence = 10
 
 	for i := 0; i < 10; i++ {
-		player.cards = append(player.cards, cardsPackage.GetNextCard())
+		player.Cards = append(player.Cards, cardsPackage.GetNextCard())
 	}
 
 	return player
 }
 
-func (p *player) SetCrystals(value int) {
+func (p *Player) String() string {
+	return fmt.Sprintf("Builders: +%d\nBricks: %d\nSoldiers: +%d\nWeapons: %d\nMages: +%d\nCrystals: %d\nCastle: %d\nFence: %d",
+		p.Builders, p.Bricks,
+		p.Soldiers, p.Weapons,
+		p.Mages, p.Crystals,
+		p.Castle, p.Fence,
+	)
+}
+
+func (p *Player) SetCrystals(value int) {
 	if value >= 0 {
-		p.crystals = value
+		p.Crystals = value
 	} else {
-		p.crystals = 0
+		p.Crystals = 0
 	}
 }
 
-func (p *player) SetBricks(value int) {
+func (p *Player) SetBricks(value int) {
 	if value >= 0 {
-		p.bricks = value
+		p.Bricks = value
 	} else {
-		p.bricks = 0
+		p.Bricks = 0
 	}
 }
 
-func (p *player) SetWeapons(value int) {
+func (p *Player) SetWeapons(value int) {
 	if value >= 0 {
-		p.weapons = value
+		p.Weapons = value
 	} else {
-		p.weapons = 0
+		p.Weapons = 0
 	}
 }
 
-func (p *player) SetMages(value int) {
+func (p *Player) SetMages(value int) {
 	if value >= 0 {
-		p.mages = value
+		p.Mages = value
 	} else {
-		p.mages = 0
+		p.Mages = 0
 	}
 }
 
-func (p *player) SetBuilders(value int) {
+func (p *Player) SetBuilders(value int) {
 	if value >= 0 {
-		p.builders = value
+		p.Builders = value
 	} else {
-		p.builders = 0
+		p.Builders = 0
 	}
 }
 
-func (p *player) SetSoldiers(value int) {
+func (p *Player) SetSoldiers(value int) {
 	if value >= 0 {
-		p.soldiers = value
+		p.Soldiers = value
 	} else {
-		p.soldiers = 0
+		p.Soldiers = 0
 	}
 }
 
-func (p *player) SetCastle(value int) { p.castle = value }
+func (p *Player) SetCastle(value int) { p.Castle = value }
 
-func (p *player) SetFence(value int) {
+func (p *Player) SetFence(value int) {
 	if value >= 0 {
-		p.fence = value
+		p.Fence = value
 	} else {
-		p.fence = 0
+		p.Fence = 0
 	}
 
 }
 
-func (p *player) Attack(value int) {
-	p.fence -= value
+func (p *Player) Attack(value int) {
+	p.Fence -= value
 
-	if p.fence < 0 {
-		p.castle += p.fence
-		p.fence = 0
+	if p.Fence < 0 {
+		p.Castle += p.Fence
+		p.Fence = 0
 	}
 }
 
-func (p *player) GetCards() []Card { return p.cards }
-
-func (p *player) ReplaceCard(pos int, newCard Card) {
-	p.cards[pos] = newCard
+func (p *Player) ReplaceCard(pos int, newCard Card) {
+	p.Cards[pos] = newCard
 }
-
-func (p *player) GetBricks() int   { return p.bricks }
-func (p *player) GetWeapons() int  { return p.weapons }
-func (p *player) GetCrystals() int { return p.crystals }
-
-func (p *player) GetBuilders() int { return p.builders }
-func (p *player) GetSoldiers() int { return p.soldiers }
-func (p *player) GetMages() int    { return p.mages }
-
-func (p *player) GetCastle() int { return p.castle }
-func (p *player) GetFence() int  { return p.fence }

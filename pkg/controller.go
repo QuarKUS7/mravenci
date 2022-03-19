@@ -1,4 +1,4 @@
-package src
+package pkg
 
 import (
 	"bufio"
@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
-	"strings"
 )
 
 type Controller interface {
@@ -15,11 +14,11 @@ type Controller interface {
 }
 
 type controller struct {
-	game Game
+	game *Game
 	view View
 }
 
-func NewController(game Game) Controller {
+func NewController(game *Game) Controller {
 	view := View{game}
 	return &controller{game, view}
 }
@@ -37,7 +36,6 @@ func (controller *controller) Run() {
 		fmt.Println(controller.view.RenderGame())
 
 		if ok := controller.game.HasWon(); ok {
-			//clearTerminal()
 			controller.view.RenderWinner()
 			return
 		}
@@ -80,25 +78,19 @@ func (controller *controller) prompt() promptState {
 			card_index, _ := strconv.Atoi(text)
 			return controller.playCard(card_index)
 		}
-
-		dicardNumberMatched, _ := regexp.MatchString(`^(discard|x) [0-9]$`, text)
-		if dicardNumberMatched {
-			card_index, _ := strconv.Atoi(strings.Fields(text)[1])
-			controller.discardCard(card_index)
-			return promptSuccess
-		}
 	}
 
 	return promptFailed
 }
 
 func (controller *controller) showHelp() {
-	fmt.Printf(" - type the number of the card you desire to play\n - type `discard <number>` or `x <number>` to discard the card\n\n")
+	fmt.Printf(" - type the number of the card you desire to play\n\n")
 }
 
 func (controller *controller) playCard(card_index int) promptState {
 	if !controller.game.IsValidToPlayNthCard(card_index) {
-		return promptFailed
+		controller.discardCard(card_index)
+		return promptSuccess
 	}
 
 	controller.game.PlayNthCard(card_index)
